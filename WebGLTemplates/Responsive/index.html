@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>{{{ PRODUCT_NAME }}}</title>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@vkontakte/vk-bridge@2.0.8/dist/index.umd.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      height: 100%;
+      width: 100%;
+      text-align: center;
+    }
+
+    #unity-canvas {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+    }
+
+    #unity-loading-bar {
+      position: absolute;
+      left: 30%;
+      top: 50%;
+      width: 40%;
+      height: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    #unity-progress-bar {
+      position: absolute;
+      left: 0%;
+      top: 0%;
+      width: 1%;
+      height: 100%;
+      background-color: #ccc;
+      border-radius: 10px;
+      transition: 400ms linear;
+    }
+  </style>
+  <script >
+    
+  </script>
+</head>
+
+<body>
+  <canvas id="unity-canvas"></canvas>
+  <div id="unity-loading-bar">
+    <div id="unity-progress-bar">
+    </div>
+  </div>
+  <script src="Build/{{{ LOADER_FILENAME }}}"></script>
+  <script>
+    const maxPixelRatioMobile = 2.0;
+    const maxPixelRatioDesktop = 1.5;
+
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var maxDevicePixelRatio = isMobile? maxPixelRatioMobile: maxPixelRatioDesktop;
+    var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
+
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+    var config = {
+      dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+      frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+      codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "{{{ COMPANY_NAME }}}",
+      productName: "{{{ PRODUCT_NAME }}}",
+      productVersion: "{{{ PRODUCT_VERSION }}}",
+      devicePixelRatio: pixelRatio
+    };
+
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBar = document.querySelector("#unity-progress-bar");
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    var ss;
+    script.onload = function() {
+      createUnityInstance(canvas, config, function(progress) {
+        progressBar.style.width = 100 * progress + "%";
+      }).then(function(unityInstance) {
+        ss = unityInstance;
+        loadingBar.style.display = "none";
+      }).catch(function(message) {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+     document.body.appendChild(script);
+    function initBridge() {
+          const bridge = vkBridge.default;
+          bridge.subscribe((e) => console.log("vkBridge event", e));
+          bridge.send("VKWebAppInit", {});
+      }
+      function showAd(adFormat, waterfall){
+
+          const bridge = vkBridge.default;
+          bridge.send("VKWebAppShowNativeAds", {ad_format:adFormat, use_waterfall:waterfall});
+		  bridge.subscribe((e) => {
+          if(e.detail.type == 'VKWebAppShowNativeAdsResult' && e.detail.data.result == true) {
+              ss.SendMessage('VkBridge', 'ShowAdsResult', 'good');
+          }
+          if(e.detail.type == 'VKWebAppShowNativeAdsFailed') {
+             ss.SendMessage('VkBridge', 'ShowAdsResult', 'noGood');
+          }
+        });
+      }
+      function sendPost(text){
+          const bridge = vkBridge.default;
+          bridge.send("VKWebAppShowWallPostBox", {
+            "message": text
+          });
+        }
+      function storageSet(key, value) {
+        const bridge = vkBridge.default;
+        bridge.send("VKWebAppStorageSet", {"key": key, "value": value});
+      }
+      function storageGet(key){
+        const bridge = vkBridge.default;
+        bridge.send("VKWebAppStorageGet", {"keys": [key]});
+        bridge.subscribe((e) => {
+          if(e.detail.type == 'VKWebAppStorageGetResult') {
+            ss.SendMessage('VkBridge', 'StorageGetResult', e.detail.data.keys[0].value);
+          }
+          if(e.detail.type == 'VKWebAppStorageGetFailed') {
+            ss.SendMessage('VkBridge', 'StorageGetResult', 'error');
+          }
+        });
+
+      }
+      function ShowLeaderBoardBox(value){
+        const bridge = vkBridge.default;
+        bridge.send("VKWebAppShowLeaderBoardBox", {user_result:Number(value)})
+         .then(data => console.log(data.success))
+        .catch(error => console.log(error));
+       
+      }
+      function inviteFriend(){
+        const bridge = vkBridge.default;
+        bridge.send("VKWebAppShowInviteBox", {})
+         .then(data => console.log(data.success))  
+        .catch(error => console.log(error));
+       
+      }
+	  function ShowSubscriptionBox(action, item, subscription_id){
+		const bridge = vkBridge.default;
+	
+		if(subscription_id == null || subscription_id == ""){
+			bridge.send("VKWebAppShowSubscriptionBox",  {
+				"action": action,
+				"item": item
+			});
+			bridge.subscribe((e) => {
+			if(e.detail.type == 'VKWebAppShowSubscriptionBoxResult') {
+				ss.SendMessage('VkBridge', 'SubscriptionBoxResult', e.detail.data.success);
+			}
+			if(e.detail.type == 'VKWebAppShowSubscriptionBoxFailed') {
+				ss.SendMessage('VkBridge', 'SubscriptionBoxResult', 'error');
+			}
+        });
+		}
+		if(subscription_id != null && subscription_id != ""){
+			bridge.send("VKWebAppShowSubscriptionBox",  {
+				"action": action,
+				"subscription_id": subscription_id
+			});
+			bridge.subscribe((e) => {
+			if(e.detail.type == 'VKWebAppShowSubscriptionBoxResult') {
+				ss.SendMessage('VkBridge', 'SubscriptionBoxResult', e.detail.data.success);
+			}
+			if(e.detail.type == 'VKWebAppShowSubscriptionBoxFailed') {
+				ss.SendMessage('VkBridge', 'SubscriptionBoxResult', 'error');
+			}
+        });
+        
+		}
+		
+	  }
+	  function AccelerometerStart(refresh_rate){
+        const bridge = vkBridge.default;
+        bridge.send("VKWebAppAccelerometerStart", {"refresh_rate": refresh_rate});
+		bridge.subscribe((e) => {
+			if(e.detail.type == 'VKWebAppAccelerometerChanged') {
+				ss.SendMessage('VkBridge', 'AccelerometerChanged', e.detail.data.x + " " +e.detail.data.y + " "+e.detail.data.z);
+			}
+			if(e.detail.type == 'VKWebAppAccelerometerStartFailed') {
+				ss.SendMessage('VkBridge', 'AccelerometerChanged', 'error');
+			}
+        });
+      }
+	  function AccelerometerStop(){
+        const bridge = vkBridge.default;
+        bridge.send("VKWebAppAccelerometerStop", {});
+      }
+  </script>
+</body>
+
+</html>
