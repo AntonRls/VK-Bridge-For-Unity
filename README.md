@@ -13,7 +13,7 @@ public VkBridgeController bridge;
 ```
 bridge.VKWebAppInit();
 ```
-
+<a href="https://github.com/AntonRls/VK-Bridge-For-Unity/blob/main/Examples.md">Примеры использования SDK</a>
 ## Доступные методы
 Библиотека всё ещё дорабатывется, на данный момент в ней доступны следующие методы:<br>
 <ul>
