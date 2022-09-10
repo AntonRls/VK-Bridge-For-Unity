@@ -27,5 +27,5 @@ bridge.VKWebAppInit();
   <li>VKWebAppShowSubscriptionBox
   <li>VKWebAppAccelerometerStart
   <li>VKWebAppAccelerometerStop
-  <li>Send (Вызов методов VKBridge, которые не реализованы в SDK)
+  <li>Send (Вызов любого события из VkBridge)
 </ul>
