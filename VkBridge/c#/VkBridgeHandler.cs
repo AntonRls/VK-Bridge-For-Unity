@@ -55,4 +55,8 @@ public class VkBridgeHandler : MonoBehaviour
         }
         controller._actionAccelerometerChange.Invoke(data);
     }
+    public void SendResult(string JSON)
+    {
+        controller._actionCustomSend.Invoke(JSON);
+    }
 }

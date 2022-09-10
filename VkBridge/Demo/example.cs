@@ -8,10 +8,20 @@ public class example : MonoBehaviour
     //VkBridge 
     public VkBridgeController bridge;
     public Text text;
+    public InputField textView;
     void Start()
     {
+
         //»нициализаци€ vk bridge
         bridge.VKWebAppInit();
+    }
+    public void SendCustom()
+    {
+        bridge.Send("VKWebAppJoinGroup", new Dictionary<string, string> { { "group_id", "1" } }, ResultCustomSend);
+    }
+    public void ResultCustomSend(string json)
+    {
+        textView.text = json;
     }
     //запуск отслеживани€ акселерометра
     public void startAccelelometer()

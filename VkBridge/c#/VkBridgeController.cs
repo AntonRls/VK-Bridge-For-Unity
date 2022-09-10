@@ -43,10 +43,11 @@ public class VkBridgeController : MonoBehaviour
 
     [DllImport("__Internal")]
     public static extern void consoleLoge(string value);
+    [DllImport("__Internal")]
+    public static extern void _Send(string name, string Params);
 
 
 
-  
 
     /// <summary>
     /// Инициализировать VK Bridge.
@@ -175,4 +176,37 @@ public class VkBridgeController : MonoBehaviour
     }
     public UnityAction<bool> _actionSubscriptionBox;
     //--
+
+    /// <summary>
+    /// Вызвать метод VK Bridge
+    /// </summary>
+    /// <param name="Name">Название метода</param>
+    /// <param name="Params">Параметры. Укажите null, если их нет</param>
+    /// <param name="Action">Метод, в который будет передан JSON, возвращаемый VK</param>
+    public void Send(string Name, Dictionary<string, string> Params, UnityAction<string> Action)
+    {
+        _actionCustomSend = Action;
+        if (Params != null)
+        {
+            ParamsStruct paramsStruct = new ParamsStruct();
+            paramsStruct.Key = new string[Params.Count];
+            paramsStruct.Body = new string[Params.Count];
+
+            int Count = 0;
+            foreach (KeyValuePair<string, string> Param in Params)
+            {
+                paramsStruct.Key[Count] = Param.Key;
+                paramsStruct.Body[Count] = Param.Value;
+                Count++;
+            }
+            _Send(Name, JsonUtility.ToJson(paramsStruct));
+        }
+        else
+        {
+            _Send(Name, "none");
+        }
+
+
+    }
+    public UnityAction<string> _actionCustomSend;
 }

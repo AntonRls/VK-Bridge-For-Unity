@@ -46,6 +46,10 @@ var plugin = {
     _VKWebAppAccelerometerStop: function()
     {
         AccelerometerStop();
+    },
+    _Send: function(name, Params)
+    {
+        CustomSend(Pointer_stringify(name), Pointer_stringify(Params));
     }
 };
 
