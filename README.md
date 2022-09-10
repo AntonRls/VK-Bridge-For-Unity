@@ -28,4 +28,5 @@ bridge.VKWebAppInit();
   <li>VKWebAppAccelerometerStart
   <li>VKWebAppAccelerometerStop
 </ul>
-Ещё доступен метод Send, аналог метода bridge.send в VK Bridge. Через него вы можете вызвать абсолютно любое событие VK Bridge. Подробнее смотрите в примерах
+<br>
+Ещё реализован метод Send, аналог метода bridge.send в VK Bridge. Через него вы можете вызвать абсолютно любое событие VK Bridge. Подробнее смотрите в примерах
