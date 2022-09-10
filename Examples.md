@@ -1,5 +1,16 @@
+## Вызов <a href="https://dev.vk.com/bridge/overview">события</a>, которое не реализовано в библиотеки
+```
+    public VkBridgeController bridge;
+    public void SendCustom()
+    {
+        bridge.Send("VKWebAppJoinGroup", new Dictionary<string, string> { { "group_id", "1" } }, ResultCustomSend);
+    }
+    public void ResultCustomSend(string json)
+    {
+        //результат метода VKWebAppJoinGroup, в JSON
+    }
+```
 ## Вызываем рекламу с вознаграждением и получаем результат просмотра
-
 ```
    public VkBridgeController bridge;
     public void ShowAdsReward()
