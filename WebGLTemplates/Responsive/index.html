@@ -111,6 +111,7 @@
           bridge.subscribe((e) => console.log("vkBridge event", e));
           bridge.send("VKWebAppInit", {});
       }
+    initBridge();
       function showAd(adFormat, waterfall){
 
           const bridge = vkBridge.default;

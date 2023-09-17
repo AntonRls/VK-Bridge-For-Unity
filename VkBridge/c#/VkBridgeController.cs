@@ -54,7 +54,9 @@ public class VkBridgeController : MonoBehaviour
     /// </summary>
     public void VKWebAppInit()
     {
+#if !UNITY_EDITOR
         _VKWebAppInit();
+#endif
     }
 
     //ads--
@@ -66,6 +68,7 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="action">Метод, в который будет передан результат просмотра рекламы </param>
     public void VKWebAppShowNativeAds(VKWebAppShowNativeAdsStruct paramsAd, UnityAction<VKWebAppShowNativeAdsResultStruct> actionResult)
     {
+#if !UNITY_EDITOR
         _actionResultAdsShow = actionResult;
         if (paramsAd.use_waterfall != null)
         {
@@ -75,6 +78,7 @@ public class VkBridgeController : MonoBehaviour
         {
             _VKWebAppShowNativeAds(Enum.GetName(typeof(AdFormat), paramsAd.ad_format), false);
         }
+#endif
     }
     public UnityAction<VKWebAppShowNativeAdsResultStruct> _actionResultAdsShow;
     //----
@@ -87,7 +91,9 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="text">Текст поста</param>
     public void VKWebAppShowWallPostBox(string text)
     {
+#if !UNITY_EDITOR
         _VKWebAppShowWallPostBox(text);
+#endif
     }
 
     //--
@@ -101,7 +107,9 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="value">Значение</param>
     public void VKWebAppStorageSet(string key, string value)
     {
+#if !UNITY_EDITOR
         _VKWebAppStorageSet(key, value);
+#endif
     }
     /// <summary>
     /// Возвращает значение переменной, заданной методом VKWebAppStorageSet. 
@@ -110,9 +118,11 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="action">Метод, в который будет передано значение переменной</param>
     public void VKWebAppStorageGet(string key, UnityAction<string> action)
     {
+#if !UNITY_EDITOR
         // TODO : Вместо стринга сделать отдельную структуру, в которой будет отслеживаться ошибка
         _actionStorageGet = action;
         _VKWebAppStorageGet(key);
+#endif
     }
     public UnityAction<string> _actionStorageGet;
 
@@ -126,8 +136,10 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="action">Метод, в который будет передаваться параметры акселерометра</param>
     public void VKWebAppAccelerometerStart(int refresh_rate, UnityAction<AccelerometerData> action)
     {
+#if !UNITY_EDITOR
         _actionAccelerometerChange = action;
         _VKWebAppAccelerometerStart(refresh_rate);
+#endif
     }
     public UnityAction<AccelerometerData> _actionAccelerometerChange;
 
@@ -136,7 +148,9 @@ public class VkBridgeController : MonoBehaviour
     /// </summary>
     public void VKWebAppAccelerometerStop()
     {
+#if !UNITY_EDITOR
         _VKWebAppAccelerometerStop();
+#endif
     }
 
     //--
@@ -148,14 +162,18 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="value">Результат пользователя</param>
     public void VKWebAppShowLeaderBoardBox(int value)
     {
+#if !UNITY_EDITOR
         _VKWebAppShowLeaderBoardBox(value.ToString());
+#endif
     }
     /// <summary>
     /// Открывает окно приглашения друзей в игру.
     /// </summary>
     public void VKWebAppShowInviteBox()
     {
+#if !UNITY_EDITOR
         _VKWebAppShowInviteBox();
+#endif
     }
     /// <summary>
     /// позволяет показать диалоговое окно подписки. Подписка — это регулярные списания голосов со счёта пользователя на счёт игры.
@@ -164,6 +182,7 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="actionSubscript">Параметры. См. https://dev.vk.com/bridge/VKWebAppShowSubscriptionBox </param>
     public void VKWebAppShowSubscriptionBox(SubscriptionBoxParamsAction actionSubscript, UnityAction<bool> action)
     {
+#if !UNITY_EDITOR
         _actionSubscriptionBox = action;
         if (actionSubscript.subscription_id != null)
         {
@@ -173,6 +192,7 @@ public class VkBridgeController : MonoBehaviour
         {
             _VKWebAppShowSubscriptionBox(Enum.GetName(typeof(SubscriptionBoxAction), actionSubscript.subscriptionAction), actionSubscript.item, null);
         }
+#endif
     }
     public UnityAction<bool> _actionSubscriptionBox;
     //--
@@ -185,6 +205,7 @@ public class VkBridgeController : MonoBehaviour
     /// <param name="Action">Метод, в который будет передан JSON, возвращаемый VK</param>
     public void Send(string Name, Dictionary<string, string> Params, UnityAction<string> Action)
     {
+#if !UNITY_EDITOR
         _actionCustomSend = Action;
         if (Params != null)
         {
@@ -205,8 +226,7 @@ public class VkBridgeController : MonoBehaviour
         {
             _Send(Name, "none");
         }
-
-
+#endif
     }
     public UnityAction<string> _actionCustomSend;
 }
